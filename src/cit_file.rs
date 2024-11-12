@@ -207,6 +207,43 @@ impl CitFile {
             println!("Switched to version {} for {}", version, self.filename);
         }
     }
+    
+    pub fn remove(&mut self, version: &str) {
+        if self.not_initialized {
+            println!("File not initialized. Please run cit init first.");
+            return;
+        }
+
+        // Check if the version is the baseline - cant remove the baseline
+        if version == "baseline" {
+            println!("Cannot remove the baseline version");
+            return;
+        }
+        // check if version exists
+        if !self.content.as_ref().unwrap().versions.contains_key(version) {
+            println!("Version {} does not exist", version);
+            return;
+        }
+        // check if the version is the current version
+        if self.content.as_ref().unwrap().current_version.as_ref().unwrap() == version {
+            println!("Cannot remove the current version, switch to another version first");
+            return;
+        }
+        // // remove the version from the map
+        // self.content.as_mut().unwrap().versions.remove(version);
+        // // update the number of versions
+        // self.content.as_mut().unwrap().num_versions -= 1;
+
+        if let Some(content) = &mut self.content {
+            // remove the version from the map
+            content.versions.remove(version);
+            // update the number of versions
+            content.num_versions -= 1;
+
+        }
+        self.save_cit_file();
+
+    } 
 
     pub fn clear(&self) {
         println!("Clearing data for {}...", self.filename);

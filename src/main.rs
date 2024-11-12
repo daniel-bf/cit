@@ -31,6 +31,11 @@ struct Args {
     /// Switch to a specific version
     #[arg(long)]
     switch: Option<String>,
+
+
+    /// Remove a specific version
+    #[arg(long)]
+    remove: Option<String>,
 }
 
 fn main() {
@@ -50,7 +55,9 @@ fn main() {
         cit_file.switch(&version, false);
     } else if args.commit {
         cit_file.commit();
-    } else {
+    } else if let Some(version) = args.remove {
+        cit_file.remove(&version);
+    }  else {
         println!("No valid option provided. Use --help for usage.");
     }
 }
